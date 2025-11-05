@@ -48,8 +48,9 @@ public class GCEventType {
     private static GCCollectorType[] G1 = new GCCollectorType[]{GCCollectorType.G1};
     private static GCCollectorType[] SHENANDOAH = new GCCollectorType[]{GCCollectorType.SHENANDOAH};
     private static GCCollectorType[] ZGC = new GCCollectorType[]{GCCollectorType.ZGC};
+    private static GCCollectorType[] GENZ = new GCCollectorType[]{GCCollectorType.GENZ};
     private static GCCollectorType[] SERIAL_AND_CMS = new GCCollectorType[]{GCCollectorType.SERIAL, GCCollectorType.CMS};
-    private static GCCollectorType[] ALL_GCS = new GCCollectorType[]{GCCollectorType.SERIAL, GCCollectorType.PARALLEL, GCCollectorType.G1, GCCollectorType.SHENANDOAH, GCCollectorType.ZGC, GCCollectorType.CMS, GCCollectorType.UNKNOWN};
+    private static GCCollectorType[] ALL_GCS = new GCCollectorType[]{GCCollectorType.SERIAL, GCCollectorType.PARALLEL, GCCollectorType.G1, GCCollectorType.SHENANDOAH, GCCollectorType.ZGC, GCCollectorType.CMS, GCCollectorType.GENZ, GCCollectorType.UNKNOWN};
     private static GCCollectorType[] GENERATIONAL_GCS = new GCCollectorType[]{GCCollectorType.SERIAL, GCCollectorType.PARALLEL, GCCollectorType.G1, GCCollectorType.CMS, GCCollectorType.UNKNOWN};
 
     // external event types
@@ -154,6 +155,33 @@ public class GCEventType {
     public static final GCEventType ZGC_PAUSE_RELOCATE_START = new GCEventType("Pause Relocate Start", PAUSE, PARENT_ZGC, ZGC);
     public static final GCEventType ZGC_CONCURRENT_RELOCATE = new GCEventType("Concurrent Relocate", CONCURRENT, PARENT_ZGC, ZGC);
     public static final GCEventType ZGC_ALLOCATION_STALL = new GCEventType("Allocation Stall", PAUSE, ZGC);
+
+    // Generational ZGC
+    public static final GCEventType GENZ_MINOR_COLLECTION = new GCEventType("Minor Collection", PARTIAL, GENZ);
+    public static final GCEventType GENZ_MAJOR_COLLECTION = new GCEventType("Major Collection", PARTIAL, GENZ);
+    
+    private static final GCEventType[] PARENT_GENZ_MINOR = {GENZ_MINOR_COLLECTION};
+    private static final GCEventType[] PARENT_GENZ_MAJOR = {GENZ_MAJOR_COLLECTION};
+    
+    public static final GCEventType GENZ_YOUNG_PAUSE_MARK_START = new GCEventType("Young Pause Mark Start", PAUSE, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_MARK = new GCEventType("Young Concurrent Mark", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_PAUSE_MARK_END = new GCEventType("Young Pause Mark End", PAUSE, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_MARK_FREE = new GCEventType("Young Concurrent Mark Free", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_NONREF = new GCEventType("Young Concurrent Process Non-Strong References", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_RESET_RELOC_SET = new GCEventType("Young Concurrent Reset Relocation Set", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_SELECT_RELOC_SET = new GCEventType("Young Concurrent Select Relocation Set", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_PAUSE_RELOCATE_START = new GCEventType("Young Pause Relocate Start", PAUSE, PARENT_GENZ_MINOR, GENZ);
+    public static final GCEventType GENZ_YOUNG_CONCURRENT_RELOCATE = new GCEventType("Young Concurrent Relocate", CONCURRENT, PARENT_GENZ_MINOR, GENZ);
+    
+    public static final GCEventType GENZ_MAJOR_PAUSE_MARK_START = new GCEventType("Major Pause Mark Start", PAUSE, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_MARK = new GCEventType("Major Concurrent Mark", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_PAUSE_MARK_END = new GCEventType("Major Pause Mark End", PAUSE, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_MARK_FREE = new GCEventType("Major Concurrent Mark Free", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_NONREF = new GCEventType("Major Concurrent Process Non-Strong References", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_RESET_RELOC_SET = new GCEventType("Major Concurrent Reset Relocation Set", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_SELECT_RELOC_SET = new GCEventType("Major Concurrent Select Relocation Set", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_PAUSE_RELOCATE_START = new GCEventType("Major Pause Relocate Start", PAUSE, PARENT_GENZ_MAJOR, GENZ);
+    public static final GCEventType GENZ_MAJOR_CONCURRENT_RELOCATE = new GCEventType("Major Concurrent Relocate", CONCURRENT, PARENT_GENZ_MAJOR, GENZ);
 
     // other
     public static final GCEventType SAFEPOINT = new GCEventType("Safepoint", PAUSE, ALL_GCS);

@@ -60,8 +60,11 @@ public class GCLogParserFactory {
 
             new ParserMetadataRule(") Garbage Collection", UNIFIED, ZGC),
             new ParserMetadataRule("Collector: Garbage Collection Cycle", UNIFIED, ZGC),
-            new ParserMetadataRule(") Minor Garbage Collection", UNIFIED, GENZ),
+            new ParserMetadataRule(") Minor Collection", UNIFIED, GENZ),
+            new ParserMetadataRule(") Major Collection", UNIFIED, GENZ),
             new ParserMetadataRule("Young Pause: Pause Mark End", UNIFIED, GENZ),
+            new ParserMetadataRule("Young Pause Mark Start", UNIFIED, GENZ),
+            new ParserMetadataRule("Major Pause Mark Start", UNIFIED, GENZ),
 
             new ParserMetadataRule("Pause Init Update Refs", UNIFIED, SHENANDOAH),
 
@@ -140,9 +143,11 @@ public class GCLogParserFactory {
                 case ZGC:
                     parser = new UnifiedZGCLogParser();
                     break;
+                case GENZ:
+                    parser = new UnifiedGenZGCLogParser();
+                    break;
                 case SHENANDOAH:
                 case GENSHEN:
-                case GENZ:
                 case EPSILON:
                     throw new CommonException("GC type not supported: " + metadata.getCollector().getName());
             }
