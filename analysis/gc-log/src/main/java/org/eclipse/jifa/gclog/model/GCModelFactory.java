@@ -29,6 +29,8 @@ public class GCModelFactory {
                 return new ParallelGCModel();
             case ZGC:
                 return new ZGCModel();
+            case GENZ:
+                return new GenZGCModel();
             case UNKNOWN:
                 return new UnknownGCModel();
             default:

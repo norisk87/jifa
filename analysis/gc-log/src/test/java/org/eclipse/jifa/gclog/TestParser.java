@@ -22,6 +22,7 @@ import org.eclipse.jifa.gclog.model.CMSGCModel;
 import org.eclipse.jifa.gclog.model.G1GCModel;
 import org.eclipse.jifa.gclog.model.GCEventType;
 import org.eclipse.jifa.gclog.model.GCModel;
+import org.eclipse.jifa.gclog.model.GenZGCModel;
 import org.eclipse.jifa.gclog.model.ParallelGCModel;
 import org.eclipse.jifa.gclog.model.SerialGCModel;
 import org.eclipse.jifa.gclog.model.ZGCModel;
@@ -35,6 +36,7 @@ import org.eclipse.jifa.gclog.parser.PreUnifiedG1GCLogParser;
 import org.eclipse.jifa.gclog.parser.PreUnifiedGenerationalGCLogParser;
 import org.eclipse.jifa.gclog.parser.UnifiedG1GCLogParser;
 import org.eclipse.jifa.gclog.parser.UnifiedGenerationalGCLogParser;
+import org.eclipse.jifa.gclog.parser.UnifiedGenZGCLogParser;
 import org.eclipse.jifa.gclog.parser.UnifiedZGCLogParser;
 import org.eclipse.jifa.gclog.vo.PauseStatistics;
 import org.eclipse.jifa.gclog.vo.TimeRange;
@@ -1149,5 +1151,51 @@ public class TestParser {
                 Assertions.assertEquals(8, event.getPhases().size());
             }
         }
+    }
+
+    @Test
+    public void testJDK21GenZGCParser() throws Exception {
+        UnifiedGenZGCLogParser parser = (UnifiedGenZGCLogParser)
+                (new GCLogParserFactory().getParser(TestUtil.getGCLog("21GenZGCParser.log")));
+        GenZGCModel model = (GenZGCModel) parser.parse(TestUtil.getGCLog("21GenZGCParser.log"));
+        model.calculateDerivedInfo(new DefaultProgressListener());
+        Assertions.assertNotNull(model);
+        
+        Assertions.assertEquals(model.getCollectorType(), GCCollectorType.GENZ);
+        Assertions.assertEquals(model.getGcEvents().size(), 2);
+        
+        // Check minor collection
+        List<GCEvent> minorCollections = model.getMinorCollections();
+        Assertions.assertEquals(minorCollections.size(), 1);
+        GCEvent minorGc = minorCollections.get(0);
+        Assertions.assertEquals(minorGc.getGcid(), 0);
+        Assertions.assertEquals(minorGc.getStartTime(), 918, DELTA);
+        Assertions.assertEquals(minorGc.getEndTime(), 950, DELTA);
+        Assertions.assertEquals(minorGc.getEventType(), GCEventType.GENZ_MINOR_COLLECTION);
+        Assertions.assertEquals(minorGc.getCause(), WARMUP);
+        Assertions.assertEquals(minorGc.getLastPhaseOfType(GCEventType.GENZ_YOUNG_PAUSE_MARK_START).getDuration(), 0.007, DELTA);
+        Assertions.assertEquals(minorGc.getMemoryItem(METASPACE).getPostCapacity(), 1032L * 1024 * 1024);
+        Assertions.assertEquals(minorGc.getMemoryItem(HEAP).getPreUsed(), 104L * 1024 * 1024);
+        Assertions.assertEquals(minorGc.getMemoryItem(HEAP).getPostUsed(), 88L * 1024 * 1024);
+        
+        // Check major collection
+        List<GCEvent> majorCollections = model.getMajorCollections();
+        Assertions.assertEquals(majorCollections.size(), 1);
+        GCEvent majorGc = majorCollections.get(0);
+        Assertions.assertEquals(majorGc.getGcid(), 1);
+        Assertions.assertEquals(majorGc.getStartTime(), 2555, DELTA);
+        Assertions.assertEquals(majorGc.getEndTime(), 2587, DELTA);
+        Assertions.assertEquals(majorGc.getEventType(), GCEventType.GENZ_MAJOR_COLLECTION);
+        Assertions.assertEquals(majorGc.getCause(), WARMUP);
+        Assertions.assertEquals(majorGc.getLastPhaseOfType(GCEventType.GENZ_MAJOR_PAUSE_MARK_START).getDuration(), 0.010, DELTA);
+        Assertions.assertEquals(majorGc.getMemoryItem(METASPACE).getPostUsed(), 12L * 1024 * 1024);
+        Assertions.assertEquals(majorGc.getMemoryItem(HEAP).getPreUsed(), 155L * 1024 * 1024);
+        Assertions.assertEquals(majorGc.getMemoryItem(HEAP).getPostUsed(), 110L * 1024 * 1024);
+        
+        // Check statistics
+        List<ZGCModel.ZStatistics> statistics = model.getStatistics();
+        Assertions.assertEquals(statistics.size(), 1);
+        Assertions.assertTrue(statistics.get(0).getStatisticItems().size() > 0);
+        Assertions.assertEquals(statistics.get(0).getStartTime(), 10417, DELTA);
     }
 }
