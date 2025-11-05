@@ -20,7 +20,8 @@ import org.eclipse.jifa.gclog.event.eventInfo.GCMemoryItem;
 import org.eclipse.jifa.gclog.model.GCEventType;
 import org.eclipse.jifa.gclog.model.GCModel;
 import org.eclipse.jifa.gclog.model.GenZGCModel;
-import org.eclipse.jifa.gclog.model.GenZGCModel.ZStatistics;
+import org.eclipse.jifa.gclog.model.ZGCModel.ZStatistics;
+import org.eclipse.jifa.gclog.model.ZGCModel.ZStatisticsItem;
 import org.eclipse.jifa.gclog.util.GCLogUtil;
 
 import java.util.ArrayList;
@@ -254,7 +255,7 @@ public class UnifiedGenZGCLogParser extends AbstractUnifiedGCLogParser {
             } else {
                 statistics = statisticsList.get(statisticsList.size() - 1);
             }
-            GenZGCModel.ZStatisticsItem item = new GenZGCModel.ZStatisticsItem(
+            ZStatisticsItem item = new ZStatisticsItem(
                     Double.parseDouble(tokens[length - 13]),
                     Double.parseDouble(tokens[length - 11]),
                     Double.parseDouble(tokens[length - 10]),

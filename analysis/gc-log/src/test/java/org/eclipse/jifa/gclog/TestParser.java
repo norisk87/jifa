@@ -1193,7 +1193,7 @@ public class TestParser {
         Assertions.assertEquals(majorGc.getMemoryItem(HEAP).getPostUsed(), 110L * 1024 * 1024);
         
         // Check statistics
-        List<GenZGCModel.ZStatistics> statistics = model.getStatistics();
+        List<ZGCModel.ZStatistics> statistics = model.getStatistics();
         Assertions.assertEquals(statistics.size(), 1);
         Assertions.assertTrue(statistics.get(0).getStatisticItems().size() > 0);
         Assertions.assertEquals(statistics.get(0).getStartTime(), 10417, DELTA);
