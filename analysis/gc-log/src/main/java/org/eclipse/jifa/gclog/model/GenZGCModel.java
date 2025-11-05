@@ -33,9 +33,7 @@ public class GenZGCModel extends ZGCModel {
     private static GCCollectorType collector = GCCollectorType.GENZ;
 
     public GenZGCModel() {
-        super();
-        // Override parent constructor settings
-        this.setCollectorType(collector);
+        super(collector);
         this.setMetaspaceCapacityReliable(true);
     }
 
